@@ -1,0 +1,29 @@
+<!--  ./views/index.handlebars -->
+<div class="container py-5">
+
+  <div class="row">
+    <div class="col-12 col-lg-10 col-xl-8 mx-auto">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Dennis的短網址產生器 <i class="fas fa-key"></i></h5>
+          <hr>
+          <form method="POST" action="/">
+            <div class="form-group form-row">
+              <label for="length" class="col-md-4 col-form-label">
+                Password Length
+              </label>
+              <div class="col-md-8">
+                <input type="number" name="length" class="form-control" id="length" min="4" max="16"
+                  value={{options.length}}>
+                <small class="text-muted form-text">Length is available between 4 ~ 16</small>
+              </div>
+            </div>
+
+            <!-- submit button -->
+            <button class="btn btn-success" type="submit">Generate Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
