@@ -2,6 +2,8 @@ const express = require('express')
 const generator = require('../../generator')
 const Website = require('../../models/website')
 const router = express.Router()
+const PORT = process.env.PORT || 3000
+const baseUrl = process.env.baseUrl || `http://localhost:${PORT}/`
 
 router.get('/new', (req, res) => {
   Website.find()
@@ -15,12 +17,11 @@ router.get('/new', (req, res) => {
 router.post('/', (req, res) => {
   const { originWeb } = req.body
   console.log(originWeb)
-  let shortenUrl = 'http://3cm-url/' + generator()
+  let shortenUrl = `${baseUrl}${generator()}`
   let check = Website.find(shortenUrl)
   while (check == null) {
-    shortenUrl = 'http://3cm-url/' + generator()
+    shortenUrl = `${baseUrl}${generator()}`
     check = Website.find(shortenUrl)
-    console.log(check)
   }
 
   return Website.create({
@@ -31,6 +32,15 @@ router.post('/', (req, res) => {
       res.render('index', { shortenUrl: website.shortenUrl, originWeb: website.originWeb })
       console.log(website.shortenUrl)
     })
+    .catch(error => console.log(error))
+})
+
+router.get('/:shortenUrl', (req, res) => {
+  const shortenUrl = `${baseUrl}${req.params.shortenUrl}`
+
+  Website.find({ shortenUrl })
+    .lean()
+    .then((website) => { res.redirect(website[0].originWeb) })
     .catch(error => console.log(error))
 })
 
