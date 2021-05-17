@@ -1,17 +1,13 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const websiteSchema = new Schema ({
-  name: {
+const websiteSchema = new Schema({
+  originWeb: {
     type: String,
     required: true
   },
-  originWeb: {
-    type: URL,
-    required: true
-  },
   shortenUrl: {
-    type: URL,
+    type: String,
     required: true
   }
 })
