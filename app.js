@@ -12,6 +12,7 @@ const generator = require('./generator')
 // const routes = require('./routes')
 require('./config/mongoose')
 const app = express()
+require('dotenv').config()
 
 app.engine('hbs', exphbs({
   defaultLayout: 'main',
@@ -37,11 +38,11 @@ app.post('/', (req, res) => {
   const { originWeb } = req.body
   console.log(originWeb)
   let shortenUrl = `${baseUrl}${generator()}`
-  // let check = Website.find(shortenUrl)
-  // while (check == null) {
-  //   shortenUrl = `${baseUrl}${generator()}`
-  //   check = Website.find(shortenUrl)
-  // }
+  let check = Website.find(shortenUrl)
+  while (check == null) {
+    shortenUrl = `${baseUrl}${generator()}`
+    check = Website.find(shortenUrl)
+  }
 
   return Website.create({
     originWeb: originWeb,
@@ -54,13 +55,13 @@ app.post('/', (req, res) => {
     .catch(error => console.log(error))
 })
 
-// app.get('/:shortenUrl', (req, res) => {
-//   const shortenUrl = `${baseUrl}${req.params.shortenUrl}`
+app.get('/:shortenUrl', (req, res) => {
+  const shortenUrl = `${baseUrl}${req.params.shortenUrl}`
 
-//   Website.find({ shortenUrl })
-//     .lean()
-//     .then((website) => { res.redirect(website[0].originWeb) })
-//     .catch(error => console.log(error))
-// })
+  Website.find({ shortenUrl })
+    .lean()
+    .then((website) => { res.redirect(website[0].originWeb) })
+    .catch(error => console.log(error))
+})
 
 app.listen(PORT, () => { console.log(`This app is running on http://localhost:${PORT}`) })
