@@ -3,13 +3,14 @@ const express = require('express')
 const exphbs = require('express-handlebars')
 const methodOverride = require('method-override')
 const bodyParser = require('body-parser')
-const Website = require('../../models/website')
+const Website = require('./models/website')
+const PORT = process.env.PORT || 3000
 const baseUrl = process.env.baseUrl || `http://localhost:${PORT}/`
 
 const generator = require('./generator')
 
 
-const routes = require('./routes')
+// const routes = require('./routes')
 require('./config/mongoose')
 const app = express()
 
@@ -26,7 +27,12 @@ app.engine('hbs', exphbs({
 app.set('view engine', 'hbs')
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
+
 // app.use(routes)
+
+app.get('/', (req, res) => {
+  res.render('index')
+})
 
 app.post('/', (req, res) => {
   const { originWeb } = req.body
@@ -58,5 +64,5 @@ app.get('/:shortenUrl', (req, res) => {
     .catch(error => console.log(error))
 })
 
-const PORT = process.env.PORT || 3000
+
 app.listen(PORT, () => { console.log(`This app is running on http://localhost:${PORT}`) })
