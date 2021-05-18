@@ -5,7 +5,6 @@ const methodOverride = require('method-override')
 const bodyParser = require('body-parser')
 const Website = require('./models/website')
 const PORT = process.env.PORT || 3000
-const baseUrl = process.env.baseUrl || `http://localhost:${PORT}/`
 
 const generator = require('./generator')
 
@@ -13,6 +12,7 @@ const generator = require('./generator')
 require('./config/mongoose')
 const app = express()
 require('dotenv').config()
+const homeUrl = process.env.baseUrl || `http://localhost:${PORT}/`
 
 app.engine('hbs', exphbs({
   defaultLayout: 'main',
@@ -28,8 +28,6 @@ app.set('view engine', 'hbs')
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 
-// app.use(routes)
-
 app.get('/', (req, res) => {
   res.render('index')
 })
@@ -37,10 +35,10 @@ app.get('/', (req, res) => {
 app.post('/', (req, res) => {
   const { originWeb } = req.body
   console.log(originWeb)
-  let shortenUrl = `${baseUrl}${generator()}`
+  let shortenUrl = `${homeUrl}${generator()}`
   let check = Website.find(shortenUrl)
   while (check == null) {
-    shortenUrl = `${baseUrl}${generator()}`
+    shortenUrl = `${homeUrl}${generator()}`
     check = Website.find(shortenUrl)
   }
 
@@ -56,7 +54,7 @@ app.post('/', (req, res) => {
 })
 
 app.get('/:shortenUrl', (req, res) => {
-  const shortenUrl = `${baseUrl}${req.params.shortenUrl}`
+  const shortenUrl = `${homeUrl}${req.params.shortenUrl}`
 
   Website.find({ shortenUrl })
     .lean()
