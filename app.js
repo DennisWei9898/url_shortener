@@ -38,11 +38,11 @@ app.post('/', (req, res) => {
   const { originWeb } = req.body
   console.log(originWeb)
   let shortenUrl = `${baseUrl}${generator()}`
-  let check = Website.find(shortenUrl)
-  while (check == null) {
-    shortenUrl = `${baseUrl}${generator()}`
-    check = Website.find(shortenUrl)
-  }
+  // let check = Website.find(shortenUrl)
+  // while (check == null) {
+  //   shortenUrl = `${baseUrl}${generator()}`
+  //   check = Website.find(shortenUrl)
+  // }
 
   return Website.create({
     originWeb: originWeb,
