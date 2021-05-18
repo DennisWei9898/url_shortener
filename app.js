@@ -36,6 +36,7 @@ app.post('/', (req, res) => {
   const { originWeb } = req.body
   console.log(originWeb)
   let shortenUrl = `${homeUrl}${generator()}`
+  // prevent repeat url show up
   let check = Website.find(shortenUrl)
   while (check == null) {
     shortenUrl = `${homeUrl}${generator()}`
@@ -53,6 +54,7 @@ app.post('/', (req, res) => {
     .catch(error => console.log(error))
 })
 
+// remind user to input the url in index.hbs
 app.get('/:shortenUrl', (req, res) => {
   const shortenUrl = `${homeUrl}${req.params.shortenUrl}`
 
