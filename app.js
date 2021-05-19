@@ -34,24 +34,38 @@ app.get('/', (req, res) => {
 
 app.post('/', (req, res) => {
   const { originWeb } = req.body
-  console.log(originWeb)
-  let shortenUrl = `${homeUrl}${generator()}`
-  // prevent repeat url show up
-  let check = Website.find(shortenUrl)
-  while (check == null) {
-    shortenUrl = `${homeUrl}${generator()}`
-    check = Website.find(shortenUrl)
-  }
-
-  return Website.create({
-    originWeb: originWeb,
-    shortenUrl: shortenUrl
-  })
+  console.log(`original web :${originWeb}`)
+  // check  whether original url is exist or not
+  Website.find()
+    .lean()
     .then((website) => {
-      res.render('index', { shortenUrl: website.shortenUrl, originWeb: website.originWeb })
-      console.log(website.shortenUrl)
+      const checkOriginWeb = website.find((newUrl) => newUrl.originWeb === originWeb)
+      console.log(checkOriginWeb)
+      if (checkOriginWeb) {
+        const shortenUrl = checkOriginWeb.shortenUrl
+        console.log(`inside1:${shortenUrl}`)
+        return res.render('index', { originWeb: originWeb, shortenUrl: shortenUrl })
+      } else {
+        // prevent repeat url show up
+        let shortenUrl = `${homeUrl}${generator()}`
+        let checkShortenUrl = Website.find(shortenUrl)
+        // run loop until new shorten url is create
+        while (checkShortenUrl === null) {
+          shortenUrl = `${homeUrl}${generator()}`
+          checkShortenUrl = Website.find(shortenUrl)
+        }
+
+        return Website.create({
+          originWeb: originWeb,
+          shortenUrl: shortenUrl
+        })
+          .then((website) => {
+            res.render('index', { shortenUrl: website.shortenUrl, originWeb: website.originWeb })
+            console.log(website.shortenUrl)
+          })
+          .catch(error => console.log(error))
+      }
     })
-    .catch(error => console.log(error))
 })
 
 // remind user to input the url in index.hbs
